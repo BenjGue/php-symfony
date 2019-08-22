@@ -17,27 +17,14 @@ class ContactController extends Controller
 {
 
     /**
-     * @Route("contacts/{contactId}", name="Recupere_un_Contact", methods={"GET"})
-     */
-    public function getContact ($contactId)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        //get data from repo
-        $contact = $em->getRepository(Contact::class)->find($contactId);
-
-        //serialize
-        $data = $this->get('jms_serializer')->serialize($contact, 'json');
-
-        //set the response
-        $response = JsonResponse::fromJsonString($data);
-
-        return $response;
-    }
-
-
-    /**
      * @Route("contacts/{contactId}", name="update_un_Contact", methods={"PUT"})
+     *
+     * @param $contactId id du contact à modifier
+     * @param Request $request injecttion de la request
+     * @param LoggerInterface $logger injection du logger
+     * @param ValidatorInterface $validator injection validator
+     * @return JsonResponse|Response response en cas d'erreur
+     * @throws \Exception exception not found
      */
     public function updateContact ($contactId, Request $request, LoggerInterface $logger, ValidatorInterface $validator)
     {
@@ -61,13 +48,22 @@ class ContactController extends Controller
 
     /**
      * @Route("contacts", name="ajouteConatct", methods={"POST"})
+     *
+     * @param Request $request injection requete.
+     * @param LoggerInterface $logger injecion logger.
+     * @param ValidatorInterface $validator inejection validator.
+     * @return JsonResponse|Response réponse en cas d'erreur de validation
+     * @throws \Exception exception
      */
     public function addContact (Request $request, LoggerInterface $logger,  ValidatorInterface $validator) {
         //get data in body
         $data = $request->getContent();
         $logger->info("addContact data received : " . $data);
 
+        //validate and save
         $result = $this->saveContact($data, $validator, $logger, -1);
+
+        //gestion réponse soit contact soit message erreur
         if($result instanceof Contact) {
             $contact = $result;
         } else {
@@ -144,6 +140,7 @@ class ContactController extends Controller
             $contact = $persist;
         }
 
+        //récupère le carnet
         $carnet = $em->getRepository(Carnet::class)->find($contact->getCarnet()->getId());
         $contact->setCarnet($carnet);
 

@@ -2,7 +2,3 @@ carnet_adresse:
     resource: "@CarnetAdresseBundle/Controller/"
     type:     annotation
     prefix:   /
-
-app:
-    resource: '@AppBundle/Controller/'
-    type: annotation

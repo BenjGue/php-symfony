@@ -1,0 +1,29 @@
+html,
+body {
+  height: 100%;
+}
+
+.carnet-box {
+  min-height: 150px;
+  max-width: 150px;
+}
+
+#page-content {
+  flex: 1 0 auto;
+}
+
+#sticky-footer {
+  flex-shrink: none;
+}
+
+.nom-carnet {
+  font-size: 12pt;
+  font-weight: 550;
+}
+
+.edit {
+  &:hover {
+    color: #7f0000;
+    cursor: pointer;
+  }
+}
